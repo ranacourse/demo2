@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathematics Portal | Dr. Sohel Rana</title>
+<style>
+:root{--ink:#06130f;--panel:rgba(255,255,255,.055);--line:rgba(255,255,255,.14);--text:#e8fff7;--muted:#97b8ac;--math:#2fe0b0;--blue:#4f8cff;--amber:#ffc857}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--text);font-family:system-ui,'Segoe UI',Roboto,sans-serif;min-height:100vh;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(700px 500px at 10% 0%,rgba(47,224,176,.22),transparent),radial-gradient(600px 500px at 100% 100%,rgba(79,140,255,.2),transparent)}
+.sym{position:fixed;z-index:0;color:rgba(47,224,176,.09);font-family:Georgia,serif;font-size:4rem;animation:rise linear infinite;pointer-events:none;user-select:none}
+@keyframes rise{from{transform:translateY(105vh) rotate(0)}to{transform:translateY(-20vh) rotate(40deg)}}
+main{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:30px 22px 20px}
+.back{display:inline-block;color:var(--math);text-decoration:none;font-weight:600;margin-bottom:26px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:var(--panel);transition:transform .2s}
+.back:hover{transform:translateX(-4px)}
+h1{font-family:Georgia,'Iowan Old Style',serif;font-size:clamp(2.2rem,6vw,3.6rem);letter-spacing:-.02em;background:linear-gradient(90deg,#fff,var(--math) 60%,var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin:12px 0 26px;max-width:680px;line-height:1.6}
+.bar{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:30px}
+.search{flex:1;min-width:230px;padding:14px 18px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:1rem}
+.search:focus{outline:2px solid var(--math)}
+.prog{min-width:230px}
+.prog small{color:var(--muted)}
+.track{height:10px;border-radius:99px;background:var(--panel);border:1px solid var(--line);overflow:hidden;margin-top:6px}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--math),var(--blue));border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px;align-items:start}
+.ch{--c:var(--math);border-radius:22px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(12px);overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .3s;opacity:0;animation:in .7s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes in{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+.ch:hover{border-color:var(--c);transform:translateY(-4px)}
+.ch.open{border-color:var(--c);box-shadow:0 20px 50px -22px var(--c)}
+.ch.done .num{background:var(--c);color:#04130f}
+.head{width:100%;display:flex;gap:16px;align-items:center;padding:22px;background:none;border:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
+.head:focus-visible{outline:2px solid var(--c);outline-offset:-4px}
+.num{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-weight:800;border:1px solid var(--c);color:var(--c);transition:.3s}
+.head h2{font-family:Georgia,serif;font-size:1.2rem;line-height:1.25}
+.head span.t{display:block;color:var(--muted);font-size:.85rem;margin-top:3px}
+.chev{margin-left:auto;transition:transform .35s;color:var(--c)}
+.open .chev{transform:rotate(180deg)}
+.body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
+.open .body{grid-template-rows:1fr}
+.inner{overflow:hidden}
+.pad{padding:0 22px 22px}
+.pad p{color:var(--muted);line-height:1.65;font-size:.94rem;margin-bottom:12px}
+.f{margin:6px 0;padding:11px 14px;border-radius:12px;background:rgba(0,0,0,.35);border-left:3px solid var(--c);font-family:'Cambria Math',Cambria,Georgia,serif;font-size:1rem;overflow-x:auto;white-space:nowrap}
+.tip{margin-top:12px;font-size:.88rem;color:var(--amber)}
+.mark{margin-top:14px;padding:10px 18px;border-radius:12px;border:1px solid var(--c);background:none;color:var(--c);font-weight:700;cursor:pointer;transition:.2s}
+.mark:hover,.done .mark{background:var(--c);color:#04130f}
+.lab{margin:46px 0 10px;border-radius:24px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px);padding:26px}
+.lab h2{font-family:Georgia,serif;margin-bottom:6px}
+.lab>p{color:var(--muted);margin-bottom:18px}
+.labgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:center}
+svg{width:100%;max-width:360px;background:rgba(0,0,0,.3);border-radius:18px;border:1px solid var(--line);touch-action:none;cursor:crosshair}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.out div{padding:14px;border-radius:14px;background:rgba(0,0,0,.3);border:1px solid var(--line)}
+.out small{display:block;color:var(--muted);margin-bottom:4px}
+.out b{font-size:1.3rem;color:var(--math)}
+.empty{display:none;text-align:center;color:var(--muted);padding:40px}
+footer{position:relative;z-index:1;text-align:center;padding:26px;color:var(--muted);font-size:.9rem}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ch{opacity:1}.sym{display:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<main>
+  <a class="back" href="index.html">&larr; Back to Learning Hub</a>
+  <h1>Mathematics Portal</h1>
+  <p class="sub">Ten core chapters for engineering and AIML students. Open a chapter for key ideas and formulas, then tick it off to track your progress.</p>
+
+  <div class="bar">
+    <input class="search" id="q" type="search" placeholder="Search chapters, e.g. Fourier, matrix, probability" aria-label="Search chapters">
+    <div class="prog"><small id="ptxt">0 of 10 chapters completed</small><div class="track"><div class="fill" id="pfill"></div></div></div>
+  </div>
+
+  <section class="grid" id="grid"></section>
+  <p class="empty" id="empty">No chapter matches your search. Try a shorter keyword.</p>
+
+  <section class="lab">
+    <h2>Vector lab</h2>
+    <p>Drag the two arrow tips. The dot product, cross product and angle update live.</p>
+    <div class="labgrid">
+      <svg id="svg" viewBox="-180 -180 360 360" aria-label="Vector playground"></svg>
+      <div class="out">
+        <div><small>A · B</small><b id="o1">0</b></div>
+        <div><small>|A × B|</small><b id="o2">0</b></div>
+        <div><small>Angle θ</small><b id="o3">0°</b></div>
+        <div><small>|A| and |B|</small><b id="o4">0</b></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>&copy; 2026 Dr. Sohel Rana. Designed for seamless desktop &amp; mobile web view.</footer>
+
+<script>
+const CH=[
+{t:'Vector Algebra',s:'Dot and cross products',c:'#2fe0b0',p:'Vectors carry both magnitude and direction. They describe forces, velocities and the feature vectors used in machine learning.',f:['A · B = |A||B| cos θ','A × B = |A||B| sin θ n̂','|A| = √(a₁² + a₂² + a₃²)'],tip:'Trick: A · B = 0 means the vectors are perpendicular.'},
+{t:'Vector Calculus',s:'Gradient, divergence, curl',c:'#4f8cff',p:'Vector calculus describes how fields change in space. It is the language of electromagnetism and fluid flow.',f:['∇f = (∂f/∂x, ∂f/∂y, ∂f/∂z)','∇ · F = ∂Fx/∂x + ∂Fy/∂y + ∂Fz/∂z','∇ × (∇f) = 0'],tip:'The gradient always points toward the steepest increase of f.'},
+{t:'Matrices & Determinants',s:'Operations and inverses',c:'#ffc857',p:'Matrices store linear transformations and systems of equations. A zero determinant means the matrix cannot be inverted.',f:['det [a b; c d] = ad − bc','A⁻¹ = adj(A) / det(A)','(AB)ᵀ = BᵀAᵀ'],tip:'Matrix multiplication is not commutative: AB ≠ BA in general.'},
+{t:'Eigenvalues & Eigenvectors',s:'The heart of PCA',c:'#ff7a90',p:'An eigenvector keeps its direction under a transformation and is only stretched by its eigenvalue. PCA and Google PageRank rely on this.',f:['A v = λ v','det(A − λI) = 0','trace(A) = Σλ, det(A) = Πλ'],tip:'Solve the characteristic equation first, then find each vector.'},
+{t:'Differential Calculus',s:'Limits and derivatives',c:'#2fe0b0',p:'The derivative measures instantaneous rate of change. It drives optimisation, including gradient descent in neural networks.',f:['f′(x) = lim (f(x+h) − f(x)) / h','d/dx (uv) = u′v + uv′','d/dx f(g(x)) = f′(g(x)) g′(x)'],tip:'Set f′(x) = 0 to find maxima and minima.'},
+{t:'Integral Calculus',s:'Areas and accumulation',c:'#4f8cff',p:'Integration adds up infinitely many small pieces to give area, work, charge and probability.',f:['∫ xⁿ dx = xⁿ⁺¹/(n+1) + C','∫ₐᵇ f dx = F(b) − F(a)','∫ u dv = uv − ∫ v du'],tip:'Choose u with the LIATE order: Log, Inverse trig, Algebraic, Trig, Exponential.'},
+{t:'Differential Equations',s:'Modelling change',c:'#ffc857',p:'A differential equation links a quantity to its rate of change. It models circuits, springs, population growth and cooling.',f:['dy/dx + P y = Q  →  y = e^(−∫P)(∫Q e^(∫P) + C)','y″ + a y′ + b y = 0','m² + a m + b = 0'],tip:'For linear second-order equations, start with the auxiliary equation.'},
+{t:'Fourier Series',s:'Waves from sines and cosines',c:'#ff7a90',p:'Any periodic signal can be built from sine and cosine waves. This is the basis of audio compression and signal processing.',f:['f(x) = a₀/2 + Σ (aₙ cos nx + bₙ sin nx)','aₙ = (1/π) ∫ f(x) cos nx dx','bₙ = (1/π) ∫ f(x) sin nx dx'],tip:'Even functions have only cosine terms; odd functions only sine terms.'},
+{t:'Laplace Transform',s:'Turning calculus into algebra',c:'#2fe0b0',p:'The Laplace transform converts differential equations into algebraic ones that are far easier to solve.',f:['L{f(t)} = ∫₀^∞ e^(−st) f(t) dt','L{eᵃᵗ} = 1/(s − a)','L{f′} = sF(s) − f(0)'],tip:'Solve in the s-domain, then use partial fractions to go back.'},
+{t:'Probability & Statistics',s:'Reasoning under uncertainty',c:'#4f8cff',p:'Probability measures how likely events are. Together with statistics, it is the foundation of data science and AIML.',f:['P(A|B) = P(B|A) P(A) / P(B)','E[X] = Σ x P(x)','σ² = E[X²] − (E[X])²'],tip:'Bayes’ theorem updates your belief when new evidence arrives.'}
+];
+const grid=document.getElementById('grid');
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem('mathDone')||'[]'))}catch(e){}
+const save=()=>{try{localStorage.setItem('mathDone',JSON.stringify([...done]))}catch(e){}};
+CH.forEach((c,i)=>{
+  const el=document.createElement('article');
+  el.className='ch'+(done.has(i)?' done':'');el.style.setProperty('--c',c.c);el.style.animationDelay=(i*70)+'ms';
+  el.dataset.s=(c.t+' '+c.s+' '+c.p).toLowerCase();
+  el.innerHTML='<button class="head" aria-expanded="false"><span class="num">'+(i+1)+'</span><span><h2>'+c.t.replace(/&/g,'&amp;')+'</h2><span class="t">'+c.s+'</span></span><span class="chev">▼</span></button>'+
+  '<div class="body"><div class="inner"><div class="pad"><p>'+c.p+'</p>'+c.f.map(f=>'<div class="f">'+f+'</div>').join('')+'<p class="tip">'+c.tip+'</p><button class="mark">'+(done.has(i)?'Completed ✓':'Mark as complete')+'</button></div></div></div>';
+  const head=el.querySelector('.head'),mark=el.querySelector('.mark');
+  head.onclick=()=>{const o=el.classList.toggle('open');head.setAttribute('aria-expanded',o)};
+  mark.onclick=()=>{done.has(i)?done.delete(i):done.add(i);el.classList.toggle('done',done.has(i));mark.textContent=done.has(i)?'Completed ✓':'Mark as complete';save();prog()};
+  grid.appendChild(el);
+});
+function prog(){document.getElementById('ptxt').textContent=done.size+' of '+CH.length+' chapters completed';document.getElementById('pfill').style.width=(done.size/CH.length*100)+'%'}
+prog();
+document.getElementById('q').oninput=e=>{
+  const v=e.target.value.trim().toLowerCase();let n=0;
+  grid.querySelectorAll('.ch').forEach(el=>{const m=!v||el.dataset.s.includes(v);el.style.display=m?'':'none';if(m)n++});
+  document.getElementById('empty').style.display=n?'none':'block';
+};
+/* floating symbols */
+['∫','∑','π','∇','λ','√','∞','θ','Δ','≈'].forEach((s,i)=>{
+  const d=document.createElement('div');d.className='sym';d.textContent=s;
+  d.style.left=(5+i*10)+'%';d.style.fontSize=(2.5+(i%4))+'rem';d.style.animationDuration=(22+i*3)+'s';d.style.animationDelay=(-i*4)+'s';
+  document.body.appendChild(d);
+});
+/* vector lab */
+const svg=document.getElementById('svg'),NS='http://www.w3.org/2000/svg';
+let A={x:110,y:-40},B={x:30,y:-110};
+svg.innerHTML='<defs><marker id="ma" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#2fe0b0"/></marker><marker id="mb" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#ffc857"/></marker></defs><path d="M-180 0H180M0 -180V180" stroke="rgba(255,255,255,.15)"/><path id="arc" fill="rgba(79,140,255,.25)" stroke="#4f8cff"/><line id="la" stroke="#2fe0b0" stroke-width="3" marker-end="url(#ma)" x1="0" y1="0"/><line id="lb" stroke="#ffc857" stroke-width="3" marker-end="url(#mb)" x1="0" y1="0"/><circle id="ca" r="13" fill="rgba(47,224,176,.25)" stroke="#2fe0b0"/><circle id="cb" r="13" fill="rgba(255,200,87,.25)" stroke="#ffc857"/>';
+const $=id=>svg.querySelector('#'+id);
+function upd(){
+  const la=$('la'),lb=$('lb');
+  la.setAttribute('x2',A.x);la.setAttribute('y2',A.y);lb.setAttribute('x2',B.x);lb.setAttribute('y2',B.y);
+  $('ca').setAttribute('cx',A.x);$('ca').setAttribute('cy',A.y);$('cb').setAttribute('cx',B.x);$('cb').setAttribute('cy',B.y);
+  const ax=A.x,ay=-A.y,bx=B.x,by=-B.y,ma=Math.hypot(ax,ay),mb=Math.hypot(bx,by);
+  const dot=ax*bx+ay*by,cr=ax*by-ay*bx,ang=ma&&mb?Math.acos(Math.max(-1,Math.min(1,dot/(ma*mb))))*180/Math.PI:0;
+  const r=34,a1=Math.atan2(A.y,A.x),a2=Math.atan2(B.y,B.x);
+  let d=a2-a1;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;
+  $('arc').setAttribute('d','M0 0L'+r*Math.cos(a1)+' '+r*Math.sin(a1)+'A'+r+' '+r+' 0 0 '+(d>0?1:0)+' '+r*Math.cos(a2)+' '+r*Math.sin(a2)+'Z');
+  o1.textContent=Math.round(dot/100)/10;o2.textContent=Math.round(Math.abs(cr)/100)/10;o3.textContent=ang.toFixed(1)+'°';o4.textContent=Math.round(ma/10)/10+' , '+Math.round(mb/10)/10;
+}
+let drag=null;
+function pt(e){const r=svg.getBoundingClientRect(),k=360/r.width;return{x:(e.clientX-r.left)*k-180,y:(e.clientY-r.top)*k-180}}
+svg.addEventListener('pointerdown',e=>{const p=pt(e);drag=Math.hypot(p.x-A.x,p.y-A.y)<=Math.hypot(p.x-B.x,p.y-B.y)?A:B;svg.setPointerCapture(e.pointerId);Object.assign(drag,clamp(p))});
+svg.addEventListener('pointermove',e=>{if(drag){Object.assign(drag,clamp(pt(e)));upd()}});
+svg.addEventListener('pointerup',()=>drag=null);
+function clamp(p){return{x:Math.max(-170,Math.min(170,p.x)),y:Math.max(-170,Math.min(170,p.y))}}
+upd();
+</script>
+</body>
+</html>
